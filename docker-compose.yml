@@ -9,30 +9,39 @@ services:
        POSTGRES_HOST: "${POSTGRES_HOST:-localhost}"
        POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
        POSTGRES_DB: "${POSTGRES_DB:-megatron}"
- 
+     healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}"]
+      interval: 2s
+      timeout: 1s
+      retries: 3
+
    backend:
-     build:
-       context: ./backend
-       dockerfile: Dockerfile
-     ports:
-       - 4000:4000
-     depends_on:
-       - postgres
-     env_file:
-       - .env
- 
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    depends_on:
+      postgres:
+        condition: service_healthy  # Wait until postgres is healthy
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+
    frontend:
-      build:
-        context: ./frontend
-        dockerfile: Dockerfile
-      ports:
-        - 3000:3000
-      depends_on:
-        - backend
-      environment:
-       - WATCHPACK_POLLING=true
-      volumes:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    environment:
+      - HOST=0.0.0.0
+      - WATCHPACK_POLLING=true
+    volumes:
       - './frontend:/app'
-        
+
 volumes:
-   review-website-data:
+  learning-platform-data:

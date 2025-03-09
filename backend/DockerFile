@@ -1,27 +1,29 @@
+# Use the official Go image based on Alpine
 FROM golang:1.23-alpine
 
 # Install necessary packages
 RUN apk update && apk add --no-cache build-base inotify-tools postgresql-client git make gcc
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy go.mod and go.sum before copying the source code
+# Copy go.mod and go.sum first (to leverage Docker layer caching)
 COPY go.mod go.sum ./
 
-# Download dependencies
+# Download Go module dependencies
 RUN go mod download
 
-# Copy the rest of the source code
+# Copy the entire source code
 COPY . .
 
-# Ensure go.mod is tidy and includes all dependencies
+# Tidy the go.mod file to ensure all dependencies are included
 RUN go mod tidy
 
-# Build the Go application binary
-RUN go build -o app cmd/server.go
+# Build the Go application binary in a separate directory (e.g., /bin)
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/app ./cmd/server.go
 
+# Expose the application port
 EXPOSE 4000
 
-# Run the Go application
-CMD ["./app"]
+# Command to run the binary
+CMD ["/bin/app"]
