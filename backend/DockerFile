@@ -1,0 +1,25 @@
+FROM golang:1.23-alpine
+
+# Install necessary packages
+RUN apk update && apk add --no-cache build-base inotify-tools postgresql-client git make gcc
+
+# Set the working directory
+WORKDIR /app
+
+# Copy go.mod and go.sum before copying the source code
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy the rest of the source code
+COPY . .
+
+# Ensure go.mod is tidy and includes all dependencies
+RUN go mod tidy
+
+# Build the Go application binary
+RUN go build -o app cmd/server.go
+
+# Run the Go application
+CMD ["./app"]
