@@ -9,8 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"github.com/joho/godotenv"
-	"github.com/micarlost/VGReview/configs"
-	"github.com/micarlost/VGReview/internal/entity"
+	"github.com/micarlost/VGReview/backend/configs"
+	"github.com/micarlost/VGReview/backend/internal/entity"
 )
 
 func main() {
