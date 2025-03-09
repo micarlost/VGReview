@@ -18,20 +18,17 @@ services:
        - 4000:4000
      depends_on:
        - postgres
-     # env_file:
-     #   - .env
+     env_file:
+       - .env
  
- # Uncomment when the frontend is scaffolded
- 
-   # frontend:
-   #   build:
-   #     context: ./frontend
-   #     dockerfile: Dockerfile
-   #   ports:
-   #     - 3000:3000
-   #   depends_on:
-   #     - backend
-     # env_file:
-     #   - .env
+   frontend:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+      ports:
+        - 3000:3000
+      depends_on:
+        - backend
+        
 volumes:
    review-website-data:
