@@ -1,4 +1,4 @@
-module github.com/micarlost/VGReview
+module github.com/micarlost/VGReview/backend
 
 go 1.23.2
 
