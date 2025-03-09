@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"github.com/joho/godotenv"
-	"github.com/micarlost/VGReview/backend/configs"
+	configs "github.com/micarlost/VGReview/backend/configs/database"
 	"github.com/micarlost/VGReview/backend/internal/entity"
 )
 
