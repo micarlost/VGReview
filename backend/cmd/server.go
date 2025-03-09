@@ -52,6 +52,11 @@ func main() {
 	// Add healthcheck middleware for /livez and /readyz
 	app.Use(healthcheck.New(healthcheck.Config{}))
 
+	// Custom health check endpoint
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"status": "OK"})
+	})
+
 	// Initialize the database
 	db, err := configs.InitDB(conf)
 	if err != nil {
