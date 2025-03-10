@@ -4,7 +4,12 @@ go 1.23.2
 
 require github.com/gofiber/fiber/v2 v2.52.6
 
-require github.com/golang-jwt/jwt/v4 v4.5.1 
+require github.com/golang-jwt/jwt/v4 v4.5.1
+
+require (
+	github.com/Henry-Sarabia/blank v3.0.0+incompatible
+	github.com/pkg/errors v0.9.1
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
