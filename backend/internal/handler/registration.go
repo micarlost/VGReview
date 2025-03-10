@@ -16,23 +16,37 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid input"})
 	}
 
+	// Validate Role
+	if data["role"] != "student" && data["role"] != "educator" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid role: must be student or educator"})
+	}
+
 	// Validate input
 	if data["password"] != data["confirm_password"] {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Passwords do not match"})
 	}
 
+	// Encypt username
+	encryptedUsername, err := utils.Encrypt(data["username"])
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Error encrypting username"})
+	}
+
+	// Create user account
 	user := entity.Account{
-		Username: data["username"],
+		Username: encryptedUsername,
 		Email:    data["email"],
 		Password: data["password"],
 	}
 
 	// Hash password
+
 	if err := utils.HashPassword(&user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Couldn't hash password"})
 	}
 
 	// Add user to database
+
 	if err := database.DB.Create(&user).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}

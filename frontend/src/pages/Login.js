@@ -35,13 +35,18 @@ export function Login() {
                 }),
             });
 
+            if (!response.ok) {
+                const errorData = await response.json(); // Might fail if not JSON
+                throw new Error(errorData.message || "Login failed");
+            }
+
             const data = await response.json();
             if (response.ok) {
                 Notiflix.Notify.success("Login successful!");
                 Cookies.set('token', data.token, { expires: 1, sameSite: 'none', secure: true });
                 Cookies.set('userId', data.user.ID, { sameSite: 'none', secure: true });
                 setTimeout(() => {
-                    navigate('/courses', { replace: true });
+                    navigate('/Account', { replace: true });
                     window.location.reload();
                 }, 1000);
             } else {

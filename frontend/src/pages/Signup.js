@@ -64,7 +64,7 @@ export function Signup() {
             if (response.ok) {
                 Notiflix.Notify.success("Registration successful! Redirecting to login...");
                 setTimeout(() => {
-                    window.location.href = "/login";
+                    window.location.href = "/account";
                 }, 2000);
             } else {
                 Notiflix.Notify.failure(data.message || "Registration failed");

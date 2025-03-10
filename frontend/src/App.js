@@ -57,7 +57,7 @@ export default function App() {
             <Home games={games} ApiStatus={message} />
           }
         />
-        <Route path="/games" element={<GameList />} /> {/* Add the GameList route */}
+        <Route path="/games" element={<GameList games={games} />} /> {/* Add the GameList route */}
         <Route path="*" element={<NotFound />} />
         <Route path="/health" element={<HealthCheck />} />
         <Route path="/login" element={<Login />} />
