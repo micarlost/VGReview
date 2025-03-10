@@ -1,0 +1,43 @@
+.home-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .games-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .game-item {
+    border: 1px solid #000000;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f4f4f4;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .game-cover {
+    width: 100%;
+    height: 300px;  /* Adjust this to match the desired box size */
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .game-item h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .game-item p {
+    font-size: 0.9rem;
+    color: #e21010;
+  }

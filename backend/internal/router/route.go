@@ -70,4 +70,7 @@ func SetupRoutes(app *fiber.App) {
 	// Define route for user registration
 	app.Post("/register", handler.Register)
 	app.Post("/login", handler.Login)
+
+	// Define route for fetching games
+	app.Get("/games", handler.GetGamesHandler)
 }

@@ -15,10 +15,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.23.2"
+          go-version: "1.23"
 
       - name: Build
         run: cd backend && go build -v ./...
+
+      - name: Test with Retry
+        run: cd backend && go test -v ./...
 
       - name: test
         run: cd backend && go test -v ./...
