@@ -70,6 +70,12 @@ func SetupRoutes(app *fiber.App) {
 	// Define route for user registration
 	app.Post("/register", handler.Register)
 	app.Post("/login", handler.Login)
+	app.Delete("/delete", handler.Delete)
+	app.Get("/user/:user_id", handler.User)
+	app.Get("/users", handler.GetAllUsers)
+	app.Put("/update-username", handler.UpdateUsername) // Update username
+	app.Put("/update-email", handler.UpdateEmail)       // Update email with confirmation
+	app.Put("/update-password", handler.UpdatePassword) // Update password and log user off after
 
 	// Define route for fetching games
 	app.Get("/games", handler.GetGamesHandler)

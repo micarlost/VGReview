@@ -6,7 +6,6 @@
 }
 
 .home,
-.courses,
 .login,
 .signup {
   display: flex;
@@ -16,19 +15,12 @@
   font-size: 3rem;
 }
 
-.courses {
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  color: #fff;
-  font-size: 100px;
-}
 
 .login {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  color: #fff;
+  color: #000000;
   font-size: 100px;
 }
 
@@ -36,6 +28,6 @@
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  color: #fff;
+  color: #000000;
   font-size: 100px;
 }

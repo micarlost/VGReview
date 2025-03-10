@@ -27,9 +27,19 @@ func User(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "Login successful",
 		"user": fiber.Map{
+			"id":       userID,
 			"username": *decryptedUsernamePtr,
 			"email":    user.Email,
 		},
 	})
 
+}
+
+func GetAllUsers(c *fiber.Ctx) error {
+	var users []entity.Account
+	if err := database.DB.Select("email").Find(&users).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch users"})
+	}
+
+	return c.JSON(users)
 }

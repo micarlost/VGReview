@@ -16,7 +16,7 @@ import (
 )
 
 func initServer() (*fiber.App, *gorm.DB, error) {
-	app := fiber.New(fiber.Config{})
+	app := fiber.New(fiber.Config{BodyLimit: 500 * 1024 * 1024})
 
 	// Initialize the database configuration
 	conf := entity.Config{
@@ -78,19 +78,5 @@ func main() {
 	// Start the server
 	if err := app.Listen(listenAddr); err != nil {
 		log.Fatal(err)
-	}
-
-	games, err := igdb.GetIGDBData()
-	if err != nil {
-		log.Fatalf("Error fetching IGDB data: %v", err)
-	}
-
-	// Print the fetched games data
-	for _, game := range games {
-		fmt.Printf("Name: %s\n", game.Name)
-		fmt.Printf("Genre: %s\n", game.Genre)
-		fmt.Printf("Summary: %s\n", game.Summary)
-		fmt.Printf("Cover URL: %s\n", game.Cover.URL)
-		fmt.Println("-------------")
 	}
 }

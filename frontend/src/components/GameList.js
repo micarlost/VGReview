@@ -9,7 +9,7 @@ const GameList = () => {
 
   useEffect(() => {
     // Fetch the games data from the Go backend
-    axios.get('http://localhost:8080/games')
+    axios.get('http://localhost:4000/games')
       .then(response => {
         setGames(response.data);  // Save the data in state
         setLoading(false);         // Stop loading
