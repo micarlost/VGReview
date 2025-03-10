@@ -1,7 +1,9 @@
+import './App.css';
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
 import Navbar from './components/Navbar';
+
 import { Home } from './components/pages/Home'
 import { NotFound } from './components/pages/NotFound'
 import { HealthCheck } from './components/pages/HealthCheck';
@@ -9,6 +11,8 @@ import { Courses } from './components/pages/Courses'
 import { Login } from './components/pages/Login'
 import { Signup } from './components/pages/Signup'
 import { Account } from './components/pages/Account'
+
+import ProtectedRoute from "./config/ProtectedRoutes"
 
 export default function App() {
   const [message, setMessage] = useState('');
@@ -43,10 +47,10 @@ export default function App() {
         <Route path='/' element={<Home ApiStatus={message} />} />
         <Route path='*' element={<NotFound />} />
         <Route path='/health' element={<HealthCheck />} />
-        <Route path='/courses' element={<Courses />} />
+        <Route path='/courses' element={<ProtectedRoute><Courses /></ProtectedRoute>} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/account' element={<Account />} />
+        <Route path='/account' element={<ProtectedRoute><Account /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

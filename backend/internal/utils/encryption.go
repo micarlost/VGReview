@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/sandbox-science/online-learning-platform/internal/entity"
+	"github.com/micarlost/VGReview/backend/internal/entity"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -14,4 +14,9 @@ func HashPassword(user *entity.Account) error {
 
 	user.Password = string(hashedPassword)
 	return nil
+}
+
+func CheckPasswordHash(password, hash string) error {
+
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }

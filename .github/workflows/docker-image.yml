@@ -30,23 +30,10 @@ jobs:
             sleep 5
           done
 
-      # - name: Wait for frontend to be ready
-      #   run: |
-      #     echo "Waiting for frontend to be ready..."
-      #     until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do
-      #       printf '.'
-      #       sleep 5
-      #     done
-
       - name: Test backend connectivity
         run: |
           echo "Testing backend API..."
           curl -f http://localhost:4000/livez || exit 1
-
-      # - name: Test frontend connectivity
-      #   run: |
-      #     echo "Testing frontend API..."
-      #     curl -f http://localhost:3000/health || exit 1
 
       - name: Tear down Docker containers
         run: docker compose down
