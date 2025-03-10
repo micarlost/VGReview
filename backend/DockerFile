@@ -1,30 +1,29 @@
 # Use the official Go image based on Alpine
 FROM golang:1.23-alpine
 
-# Install necessary packages (including PostgreSQL client and build tools)
+# Install necessary packages
 RUN apk update && apk add --no-cache build-base inotify-tools postgresql-client git make gcc
 
-# Define the working directory inside the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy go.mod and go.sum to leverage Docker layer caching
+# Copy go.mod and go.sum first (to leverage Docker layer caching)
 COPY go.mod go.sum ./
 
 # Download Go module dependencies
 RUN go mod download
 
-# Copy the entire source code to the container
+# Copy the entire source code
 COPY . .
 
 # Tidy the go.mod file to ensure all dependencies are included
 RUN go mod tidy
 
-# Build the Go application binary for the auth0-go-web-app and main app
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/auth0-go-web-app ./cmd/auth0-server.go
+# Build the Go application binary in a separate directory (e.g., /bin)
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/app ./cmd/server.go
 
-# Expose only the backend port (e.g., 4000)
+# Expose the application port
 EXPOSE 4000
 
-# Command to run the backend application (choose one)
+# Command to run the binary
 CMD ["/bin/app"]

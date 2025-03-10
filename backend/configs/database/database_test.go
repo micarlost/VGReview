@@ -12,14 +12,19 @@ func TestInitDB(t *testing.T) {
 	cfg := entity.Config{
 		Host:     "postgres",
 		User:     "postgres",
-		Password: "1234",
+		Password: "soundwave",
 		Port:     "5432",
-		DBName:   "csudh_test",
+		DBName:   "megatron",
 		SSLMode:  "disable",
 	}
 
 	// Call InitDB function
 	db, err := InitDB(cfg)
+
+	tx := db.Begin()
+ 
+	// Rollback the transaction
+	defer tx.Rollback()
 
 	// Test for error
 	assert.NoError(t, err, "Expected no error when initializing the database")

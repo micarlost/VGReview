@@ -31,10 +31,14 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Incorrect password"})
 	}
 	// Successful login
+	token, err := utils.GenerateJWT(user.Email)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Could not generate token"})
+	}
 
 	return c.JSON(fiber.Map{
 
 		"message": "Login successful",
-		"user":    user,
+		"token":   token,
 	})
 }

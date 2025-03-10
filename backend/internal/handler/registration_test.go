@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"bytes"
@@ -26,7 +26,7 @@ func setupApp() *fiber.App {
 func setupTestDB(t *testing.T) {
 	var err error
 
-	dsn := "host=postgres user=postgres password=1234 dbname=csudh_test port=5432 sslmode=disable"
+	dsn := "host=postgres user=postgres password=soundwave dbname=megatron port=5432 sslmode=disable"
 	database.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("Failed to connect to test database: %v", err)

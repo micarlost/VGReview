@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	handlers "github.com/micarlost/VGReview/backend/internal/handler"
+	"github.com/micarlost/VGReview/backend/internal/handler"
 )
 
 var (
@@ -68,5 +68,6 @@ func SetupRoutes(app *fiber.App) {
 	})
 
 	// Define route for user registration
-	app.Post("/register", handlers.Register)
+	app.Post("/register", handler.Register)
+	app.Post("/login", handler.Login)
 }

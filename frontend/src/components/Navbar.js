@@ -28,9 +28,6 @@ function Navbar() {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/courses" className="nav-links" onClick={closeMobileMenu}>
-                            Courses
-                        </Link>
                     </li>
                     {/*If there is a user logged in replace the sign up and login buttons with the account button*/}
                     {!isLoggedIn ? 
