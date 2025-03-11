@@ -1,0 +1,14 @@
+.home-container {
+    padding: 20px;
+    text-align: center;
+    background-color: #000000;
+    min-height: 100vh;  
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  body {
+    background-color: black;
+  }

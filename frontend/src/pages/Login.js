@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Cookies from 'js-cookie'
 import Notiflix from 'notiflix';
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 export function Login() {
     const navigate                = useNavigate();
@@ -53,34 +54,34 @@ export function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Login</h2>
+        <div className="min-h-screen bg-black-100 flex items-center justify-center">
+            <div className="bg-black p-8 rounded-lg shadow-lg w-full max-w-md border-2 border-white">
+                <h2 className="text-2xl font-bold mb-6 text-white text-center">Login</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                        <label className="block text-white text-sm font-bold mb-2">Email</label>
                         <input
                             type="email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                             required
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <label className="block text-white text-sm font-bold mb-2">Password</label>
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                             required
                         />
                         <button
                             type="button"
-                            className="mt-2 text-sm text-blue-500"
+                            className="mt-2 text-sm text-red-500"
                             onClick={toggleShowPassword}
                         >
                             {showPassword ? "Hide Password" : "Show Password"}
@@ -88,7 +89,7 @@ export function Login() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300"
+                        className="w-full bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
                     >
                         Login
                     </button>

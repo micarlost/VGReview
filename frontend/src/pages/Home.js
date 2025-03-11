@@ -16,7 +16,7 @@ const Home = ({ ApiStatus }) => {
 
   return (
     <div className="home-container">
-      <h1>Game Reviews</h1>
+      <h1>Popular Games</h1>
       <div className="games-list">
         {games.length === 0 ? (
           <p>No games available</p>  // Show a message if no games are found

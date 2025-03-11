@@ -13,7 +13,7 @@ export default function SearchBar({ onChange }) {
           type="search"
           id="default-search"
           className="input w-full max-w-md pl-8 h-12 rounded-lg border"
-          placeholder="Search for a course..."
+          placeholder="Search for a videogame"
         />
       </div>
     </div>

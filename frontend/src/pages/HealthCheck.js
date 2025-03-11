@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 export function HealthCheck() {
   const [health, setHealth] = useState(null);
-  const [error, setError]   = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchHealth = async () => {
@@ -21,9 +21,13 @@ export function HealthCheck() {
     fetchHealth();
   }, []);
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  return <div>Health Status: {health ? JSON.stringify(health) : 'Loading...'}</div>;
-};
+  return (
+    <div className="text-white min-h-screen flex items-center justify-center bg-black">
+      {error ? (
+        <div>Error: {error}</div>
+      ) : (
+        <div>Health Status: {health ? JSON.stringify(health) : 'Loading...'}</div>
+      )}
+    </div>
+  );
+}
