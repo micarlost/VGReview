@@ -9,7 +9,9 @@ import { HealthCheck } from './pages/HealthCheck';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { Account } from './pages/Account';
-
+import SearchResults from "./pages/SearchResults"; // Adjust path as needed
+import GameTest from "./pages/gameTest";
+import GameDetails from './pages/GameDetails';
 import ProtectedRoute from "./config/ProtectedRoutes";
 import GameList from './components/GameList';
 
@@ -63,6 +65,10 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path="/gameTest" element={<GameTest games={games} />} />
+        <Route path="/game/:id" element={<GameDetails />} />
       </Routes>
     </Router>
   );

@@ -10,8 +10,10 @@ import (
 )
 
 type Game struct {
-	Name    string `json:"name"`
-	Genre   string `json:"genre"`
+	Name   string `json:"name"`
+	Genres []struct {
+		Name string `json:"name"`
+	} `json:"genres"`
 	Summary string `json:"summary"`
 	Cover   struct {
 		URL string `json:"url"`
@@ -23,7 +25,7 @@ func GetIGDBData() ([]Game, error) {
 	clientID := os.Getenv("IGDB_CLIENT_ID")
 	accessToken := os.Getenv("IGDB_ACCESS_TOKEN")
 
-	body := []byte(`fields name, genre, summary, cover.url; limit 10;`)
+	body := []byte(`fields name, genres.name, summary, cover.url; limit 10;`)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	if err != nil {

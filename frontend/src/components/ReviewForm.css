@@ -1,0 +1,38 @@
+.review-form {
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .review-form h3 {
+    color: white;
+    margin-bottom: 10px;
+  }
+  
+  .review-input {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background: #333;
+    color: white;
+    resize: none;
+  }
+  
+  .submit-review {
+    background: #ec0000;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .submit-review:hover {
+    background: #882121;
+  }
+  
