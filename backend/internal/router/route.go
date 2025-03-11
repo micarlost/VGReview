@@ -79,4 +79,6 @@ func SetupRoutes(app *fiber.App) {
 
 	// Define route for fetching games
 	app.Get("/games", handler.GetGamesHandler)
+	app.Get("/account", handler.AllAccounts)
+
 }

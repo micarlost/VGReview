@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/micarlost/VGReview/backend/configs/database"
 	"github.com/micarlost/VGReview/backend/internal/entity"
@@ -35,10 +38,15 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Could not generate token"})
 	}
 
+	if user.ID == 0 {
+		log.Printf("User ID is not set for user with email: %s", data.Email)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "User ID is missing"})
+	}
+
+	fmt.Println(user)
 	return c.JSON(fiber.Map{
 		"message": "Login successful",
 		"token":   token,
 		"user":    user,
-		"id":      user.ID,
 	})
 }

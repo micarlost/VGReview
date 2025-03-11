@@ -37,10 +37,11 @@ export function Login() {
             });
 
             const data = await response.json();
+            console.log(data);
             if (response.ok) {
                 Notiflix.Notify.success("Login successful!");
                 Cookies.set('token', data.token, { expires: 1, sameSite: 'none', secure: true });
-                Cookies.set('userId', data.ID, { sameSite: 'none', secure: true });
+                Cookies.set('userId', data.user.id, { sameSite: 'none', secure: true });
                 setTimeout(() => {
                     navigate('/account', { replace: true });
                     window.location.reload();

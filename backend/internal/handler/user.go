@@ -27,7 +27,6 @@ func User(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "Login successful",
 		"user": fiber.Map{
-			"id":       userID,
 			"username": *decryptedUsernamePtr,
 			"email":    user.Email,
 		},
