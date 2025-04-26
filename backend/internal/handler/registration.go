@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-
 	"github.com/micarlost/VGReview/backend/configs/database"
 	"github.com/micarlost/VGReview/backend/internal/entity"
 	"github.com/micarlost/VGReview/backend/internal/utils"
@@ -23,7 +22,7 @@ func Register(c *fiber.Ctx) error {
 	// Encypt username
 	encryptedUsername, err := utils.Encrypt(data["username"])
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Error encrypting username"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Error Encrypting Username"})
 	}
 
 	// Create user account
@@ -31,6 +30,7 @@ func Register(c *fiber.Ctx) error {
 		Username: encryptedUsername,
 		Email:    data["email"],
 		Password: data["password"],
+		Bio: "I am so cool",
 	}
 
 	// Hash password

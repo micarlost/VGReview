@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { IdentificationIcon, UserCircleIcon, TrashIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/solid';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import Notiflix from 'notiflix';
+import defaultProfilePic from "../images/Default_pfp.png"; 
+import { Link } from 'react-router-dom';  
 
 export function Account() {
     const [userInfo, setUserInfo]           = useState(null);
@@ -44,38 +45,7 @@ export function Account() {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
-
-    const handleDeleteSubmit = async (e) => {
-        e.preventDefault();
-        const userId = Cookies.get('userId');
-
-        try {
-            const response = await fetch("http://localhost:4000/delete", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    password: formData.password,
-                }),
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                Notiflix.Notify.success("Account Deleted successfully!");
-                Cookies.remove('token');
-                Cookies.remove('userId');
-                navigate('/', { replace: true });
-                window.location.reload();
-            } else {
-                Notiflix.Notify.failure(data.message);
-            }
-        } catch {
-            Notiflix.Notify.failure("Error occurred during deletion");
-        }
-    };
-
+    
     if (error) return <p className="text-white">Error: {error}</p>;
     if (!userInfo) return <p className="text-white">Loading...</p>;
 
@@ -96,38 +66,7 @@ export function Account() {
                         <p>Not implemented, yet!</p>
                     </section>
                 );
-            case 'deleteAccount':
-                return (
-                    <section>
-                        <h1 className="text-2xl font-bold mb-4">Delete Account</h1>
-                        <form onSubmit={handleDeleteSubmit} className="max-w-lg">
-                            <div className="mb-4">
-                                <label className="block text-white text-sm font-bold mb-2">Confirm with your Password</label>
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="mt-2 text-sm text-blue-500"
-                                    onClick={toggleShowPassword}
-                                >
-                                    {showPassword ? "Hide Password" : "Show Password"}
-                                </button>
-                            </div>
-                            <button
-                                type="submit"
-                                className="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
-                            >
-                                Delete Account
-                            </button>
-                        </form>
-                    </section>
-                );
+
             case 'logoutAccount':
                 return (
                     <section>
@@ -148,50 +87,33 @@ export function Account() {
     };
 
     return (
-        <div className="min-h-screen bg-white flex">
-            {/* Sidebar */}
-            <aside className="bg-white p-6 shadow-md">
-                <nav>
-                    <ul className="flex flex-col">
-                        <li>
-                            <button
-                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-white transition-colors ${activeSection === 'accountInfo' ? 'bg-white font-bold' : ''}`}
-                                onClick={() => setActiveSection('accountInfo')}
-                            >
-                                <IdentificationIcon className="h-6 w-6" title='Account Informations' />
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-white transition-colors ${activeSection === 'updateAccount' ? 'bg-white font-bold' : ''}`}
-                                onClick={() => setActiveSection('updateAccount')}
-                            >
-                                <UserCircleIcon className="h-6 w-6" title='Update Account Informations' />
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-white transition-colors ${activeSection === 'deleteAccount' ? 'bg-white font-bold' : ''}`}
-                                onClick={() => setActiveSection('deleteAccount')}
-                            >
-                                <TrashIcon className="h-6 w-6" title='Delete Account' />
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-white transition-colors ${activeSection === 'logoutAccount' ? 'bg-white font-bold' : ''}`}
-                                onClick={() => setActiveSection('logoutAccount')}
-                            >
-                                <ArrowRightStartOnRectangleIcon className="h-6 w-6" title='Logout of Account' />
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-
-            <main className="flex-1 p-8 bg-white ml-4">
-                {renderSection()}
-            </main>
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 space-y-6">
+            {/* Profile Picture */}
+            <img
+                src={userInfo.profilePicture || defaultProfilePic} // replace with actual image URL
+                alt= {"defaultProfilePic"}
+                className="w-24 h-24 rounded-full object-cover shadow-md"
+            />
+    
+            {/* Username */}
+            <h1 className="text-4xl font-bold text-black">{userInfo.username}</h1>
+    
+            {/* Bio */}
+            <p className="text-gray-600 text-center max-w-md">{userInfo.bio}</p>
+    
+            {/* Logout Button */}
+            <button
+                onClick={handleLogout} // your logout function here
+                className="mt-4 px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+            >
+                Logout
+            </button>
+            {/* Edit Account Button */}
+            <Link to="/updateaccount" className="mt-4">
+                <button className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                    Edit Account
+                </button>
+            </Link>
         </div>
     );
 }

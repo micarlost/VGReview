@@ -12,12 +12,12 @@ export default function GameDetails() {
     const [reviews, setReviews] = useState([
       {
         author: "Sabrina Carpenter",
-        review: "An amazing adventure! Totally worth the play.",
+        review: "It's Aight.",
         profilePicture: sabrina,
       },
       {
         author: "Soundwave",
-        review: "Great game, but the controls were a bit tricky.",
+        review: "Cool I think.",
         profilePicture: soundwave,
       },
     ]);

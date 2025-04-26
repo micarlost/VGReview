@@ -22,14 +22,14 @@ func User(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Error decrypting username"})
 	}
 
-	decryptedUsernamePtr := &decryptedUsername
-
 	return c.JSON(fiber.Map{
 		"message": "Login successful",
 		"user": fiber.Map{
-			"username": *decryptedUsernamePtr,
+			"username": decryptedUsername,
 			"email":    user.Email,
 			"id":       user.ID,
+			"bio":      user.Bio,
+			"profile_pic": user.ProfilePic,
 		},
 	})
 }

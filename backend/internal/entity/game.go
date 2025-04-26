@@ -8,4 +8,6 @@ type Game struct {
 	Title         string
 	ImageLocation string
 	Description   string
+	Reviews       []Review   `gorm:"foreignKey:GameID" json:"reviews"`
+	FavoritedBy   []Account  `gorm:"many2many:account_favorite_games;" json:"-"`
 }

@@ -1,7 +1,7 @@
 // src/GameList.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import "./GameList.css";
 const GameList = () => {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);

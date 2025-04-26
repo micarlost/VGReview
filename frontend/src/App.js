@@ -14,6 +14,7 @@ import GameTest from "./pages/gameTest";
 import GameDetails from './pages/GameDetails';
 import ProtectedRoute from "./config/ProtectedRoutes";
 import GameList from './components/GameList';
+import { UpdateAccount } from './pages/UpdateAccount';
 
 export default function App() {
   const [games, setGames] = useState([]);
@@ -69,6 +70,7 @@ export default function App() {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/gameTest" element={<GameTest games={games} />} />
         <Route path="/game/:id" element={<GameDetails />} />
+        <Route path="/updateaccount" element={<UpdateAccount />} />
       </Routes>
     </Router>
   );

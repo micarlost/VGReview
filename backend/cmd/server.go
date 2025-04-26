@@ -36,6 +36,12 @@ func initServer() (*fiber.App, *gorm.DB, error) {
 
 	fmt.Printf("Database initialized!\n")
 
+
+	// Run migrations
+	if err := db.AutoMigrate(&entity.Account{}); err != nil {
+		return nil, nil, fmt.Errorf("failed to migrate database: %v", err)
+	}
+
 	// Setup routes
 	router.SetupRoutes(app)
 
