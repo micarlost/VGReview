@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import Notiflix from 'notiflix';
-import defaultProfilePic from "../images/Default_pfp.png"; 
 import { Link } from 'react-router-dom';  
 
 export function Account() {
@@ -90,7 +89,7 @@ export function Account() {
         <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 space-y-6">
             {/* Profile Picture */}
             <img
-                src={userInfo.profilePicture || defaultProfilePic} // replace with actual image URL
+                src={`http://localhost:4000/${userInfo.profile_pic}`} // replace with actual image URL
                 alt= {"defaultProfilePic"}
                 className="w-24 h-24 rounded-full object-cover shadow-md"
             />

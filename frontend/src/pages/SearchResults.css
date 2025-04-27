@@ -1,0 +1,61 @@
+/* Game grid - layout for all cards */
+.game-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Game card */
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  height: 450px;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 12px;
+  background-color: #000; /* black background */
+  border: 1px solid #fff; /* skinny white border */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* Hover effect for game card */
+.game-card:hover {
+  transform: translateY(-8px) scale(1.03); /* slight lift and scale */
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.8); /* stronger glow */
+}
+
+/* Game card image */
+.game-card img {
+  width: 100%;
+  height: 230px;
+  object-fit: contain;
+  background-color: #00000000; /* keeps black behind transparent images */
+  border-radius: 8px;
+}
+
+/* Game title */
+.game-card h2 {
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-top: 15px;
+}
+
+/* Game description */
+.game-card p {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-top: 10px;
+  height: 100px; /* controls box height */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 6; /* number of lines before cutting off */
+  -webkit-box-orient: vertical;
+}

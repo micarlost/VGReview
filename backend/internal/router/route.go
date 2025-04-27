@@ -80,11 +80,14 @@ func SetupRoutes(app *fiber.App) {
 	// Define route for fetching games
 	app.Get("/games", handler.GetGamesHandler)
 	app.Get("/account", handler.AllAccounts)
-	app.Get("/api/games/search", handler.GetGamesHandler)
 
 	//Profile edits
 	app.Post("/user/:user_id/profile-pic", handler.UpdateProfilePic)
 	app.Put("/user/:user_id/profile-description", handler.UpdateProfileDescription)
+	app.Static("/uploads", "./uploads")
+
+	//Routes for IGDB
+	app.Get("/api/games/search", handler.SearchGamesWithLimitOffset)
 
 
 }

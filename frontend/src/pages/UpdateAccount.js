@@ -37,33 +37,52 @@ export function UpdateAccount() {
 
     const handleProfileUpdate = async () => {
         const userId = Cookies.get('userId');
+        let success = true;
 
         // Update Bio
-        await fetch(`http://localhost:4000/user/${userId}/bio`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ bio }),
+    const bioRes = await fetch(`http://localhost:4000/user/${userId}/profile-description`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bio }),
+    });
+
+    if (!bioRes.ok) {
+        Notiflix.Notify.failure('Failed to update bio');
+        success = false;
+    }
+
+    // Update Username
+    const usernameRes = await fetch(`http://localhost:4000/update-username`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, username }),
+    });
+
+    if (!usernameRes.ok) {
+        Notiflix.Notify.failure('Failed to update username');
+        success = false;
+    }
+
+    // Upload Profile Picture (only if a file is selected)
+    if (file) {
+        const formData = new FormData();
+        formData.append('profile_pic', file);
+
+        const picRes = await fetch(`http://localhost:4000/user/${userId}/profile-pic`, {
+            method: 'POST', // <-- fixed from PUT to POST
+            body: formData,
         });
 
-        // Update Username
-        await fetch(`http://localhost:4000/update-username`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: userId, username }),
-        });
-
-        // Upload Profile Picture
-        if (file) {
-            const formData = new FormData();
-            formData.append('profile_pic', file);
-            await fetch(`http://localhost:4000/user/${userId}/profile-pic`, {
-                method: 'PUT',
-                body: formData,
-            });
+        if (!picRes.ok) {
+            Notiflix.Notify.failure('Failed to upload profile picture');
+            success = false;
         }
+    }
 
+    if (success) {
         Notiflix.Notify.success('Profile updated!');
         window.location.reload();
+        }
     };
 
     if (error) return <p className="text-red-500">Error: {error}</p>;
