@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom"; // 👈 import to get URL query
+import { useLocation, Link } from "react-router-dom"; // 👈 import Link here
 import './SearchResults.css';
+import noPhoto from "../images/no_image.jpg";
 
 const LoadingSpinner = () => (
   <div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -19,7 +20,7 @@ function useQuery() {
 }
 
 const SearchResults = () => {
-  const queryParam = useQuery().get("query") || ""; // 👈 get query from URL
+  const queryParam = useQuery().get("query") || "";
   const [games, setGames] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -54,7 +55,7 @@ const SearchResults = () => {
     setGames([]);
     setPage(0);
     setHasMore(true);
-  }, [queryParam]); // 🔥 reset when query changes
+  }, [queryParam]);
 
   useEffect(() => {
     if (hasMore) {
@@ -76,25 +77,27 @@ const SearchResults = () => {
     <div> {/* Main wrapper div */}
       <div className="game-grid">
         {games.map((game, i) => (
-          <div key={i} className="game-card">
-            <h2>{game.name}</h2>
-            {game.cover?.url && (
+          <Link key={i} to={`/games/${game.id}`} className="game-card-link"> {/* 👈 wrap each card in a Link */}
+            <div className="game-card">
+              <h2>{game.name}</h2>
               <img
-                src={game.cover.url.replace("t_thumb", "t_cover_big")}
+                src={game.cover?.url
+                  ? game.cover.url.replace("t_thumb", "t_cover_big")
+                  : noPhoto}
                 alt={game.name}
               />
-            )}
-            <p>
-            {game.summary 
-              ? game.summary.length > 150 
-                 ? game.summary.slice(0, 150) + '...'
-                : game.summary
-              : "No description available."}
-            </p>
-          </div>
+              <p>
+                {game.summary
+                  ? game.summary.length > 150
+                    ? game.summary.slice(0, 150) + '...'
+                    : game.summary
+                  : "No description available."}
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
-  
+
       {loading && <LoadingSpinner />}
       {loading && <LoadingText />}
       {!hasMore && games.length > 0 && (
@@ -105,6 +108,6 @@ const SearchResults = () => {
       )}
     </div>
   );
-}; 
+};
 
 export default SearchResults;

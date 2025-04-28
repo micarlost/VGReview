@@ -59,3 +59,7 @@
   -webkit-line-clamp: 6; /* number of lines before cutting off */
   -webkit-box-orient: vertical;
 }
+.game-card-link {
+  text-decoration: none;
+  color: inherit;
+}

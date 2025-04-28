@@ -12,8 +12,9 @@ func User(c *fiber.Ctx) error {
 	userID := c.Params("user_id")
 
 	var user entity.Account
-	// Check if the user exists
-	if err := database.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+
+	// Preload FavoriteGames when fetching the user
+	if err := database.DB.Preload("FavoriteGames").Preload("PlayedGames").Preload("RatedGames").Where("id = ?", userID).First(&user).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}
 
@@ -30,6 +31,9 @@ func User(c *fiber.Ctx) error {
 			"id":       user.ID,
 			"bio":      user.Bio,
 			"profile_pic": user.ProfilePic,
+			"favorite_games": user.FavoriteGames,
+			"played_games": user.PlayedGames,
+			"rated_games": user.RatedGames,
 		},
 	})
 }

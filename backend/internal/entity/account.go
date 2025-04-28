@@ -9,6 +9,8 @@ type Account struct {
 	Email    string `gorm:"size:100;not null;unique" json:"email"`
 	Bio             string `gorm:"type:text" json:"bio"`            // Description or about me
 	ProfilePic  string `json:"profile_pic"`
-	FavoriteGames   []Game `gorm:"many2many:account_favorite_games;" json:"favorite_games"`
+	FavoriteGames []FavoriteGame `gorm:"foreignKey:AccountID" json:"favorite_games"`
+	PlayedGames []PlayedGame `gorm:"foreignKey:AccountID" json:"played_games"`
+	RatedGames []Rated `gorm:"foreignKey:AccountID" json:"rated_games"`
 	Reviews         []Review `gorm:"foreignKey:AccountID" json:"reviews"`
 }

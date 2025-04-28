@@ -151,3 +151,81 @@ func SearchGamesWithLimitOffset(c *fiber.Ctx) error {
 
 	return c.JSON(games)
 }
+func GetGameData(c *fiber.Ctx) error {
+	// Get the game ID from the URL
+	gameID := c.Params("id")
+	if gameID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing game ID"})
+	}
+
+	// Build the IGDB request body
+	requestBody := `
+		fields age_ratings, cover.url, dlcs, first_release_date, game_type, genres.name, involved_companies.company.name, 
+		name, parent_game, platforms.name, player_perspectives, rating, rating_count, screenshots.url, 
+		slug, standalone_expansions, status, storyline, summary, tags, themes, total_rating, total_rating_count, url, videos.video_id;
+		where id = ` + gameID + `;
+		limit 1;
+	`
+
+	// Create the HTTP request
+	req, err := http.NewRequest(http.MethodPost, igdbEndpoint, strings.NewReader(requestBody))
+	if err != nil {
+		log.Println("Error creating IGDB request:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create IGDB request"})
+	}
+
+	// Set required headers
+	req.Header.Add("Client-ID", clientID)
+	req.Header.Add("Authorization", "Bearer "+accessToken)
+	req.Header.Add("Accept", "application/json")
+
+	// Send the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error sending IGDB request:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to send IGDB request"})
+	}
+	defer resp.Body.Close()
+
+	// Read response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Error reading IGDB response:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to read IGDB response"})
+	}
+
+	// Debugging (optional)
+	log.Println("IGDB Detailed Game Response:", string(body))
+
+	// Parse JSON
+	var games []map[string]interface{}
+	if err := json.Unmarshal(body, &games); err != nil {
+		log.Println("Error decoding IGDB JSON:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to decode IGDB response"})
+	}
+
+	if len(games) == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Game not found"})
+	}
+
+	// Fix image URLs if needed (optional)
+	if cover, exists := games[0]["cover"].(map[string]interface{}); exists {
+		if url, ok := cover["url"].(string); ok && strings.HasPrefix(url, "//") {
+			cover["url"] = "https:" + url
+		}
+	}
+	if screenshots, exists := games[0]["screenshots"].([]interface{}); exists {
+		for _, shot := range screenshots {
+			if shotMap, ok := shot.(map[string]interface{}); ok {
+				if url, ok := shotMap["url"].(string); ok && strings.HasPrefix(url, "//") {
+					shotMap["url"] = "https:" + url
+				}
+			}
+		}
+	}
+
+	// Send the first (and only) game object back
+	return c.JSON(games[0])
+}
+

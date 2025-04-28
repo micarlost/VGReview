@@ -43,7 +43,7 @@ function Navbar() {
             <div className="navbar-container">
             {!hideSearchBar && (
                     <div className="search-bar-wrapper">
-                        <SearchBar onChange={handleSearch} />
+                        <SearchBar onSearch={handleSearch} />
                     </div>
                 )}
                 <div className="menu-icon" onClick={handleMobileMenuClick}>

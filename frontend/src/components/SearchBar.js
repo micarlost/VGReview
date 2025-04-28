@@ -1,8 +1,17 @@
+import { useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-export default function SearchBar({ onChange }) {
+export default function SearchBar({ onSearch }) {
+  const [inputValue, setInputValue] = useState('');
+
   const handleInputChange = (e) => {
-    onChange(e.target.value);  // Pass the string value directly
+    setInputValue(e.target.value); // Just update local state
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      onSearch(inputValue); // 🔥 Only trigger search when Enter is pressed
+    }
   };
 
   return (
@@ -13,7 +22,9 @@ export default function SearchBar({ onChange }) {
           <MagnifyingGlassIcon className="w-4 h-4 text-gray-500" />
         </div>
         <input
-          onChange={handleInputChange}  // Call the handler with the string value
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown} // 👈 listen for key press
           type="search"
           id="default-search"
           className="input w-full max-w-md pl-8 h-12 rounded-lg border"

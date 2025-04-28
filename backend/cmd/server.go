@@ -38,7 +38,13 @@ func initServer() (*fiber.App, *gorm.DB, error) {
 
 
 	// Run migrations
-	if err := db.AutoMigrate(&entity.Account{}); err != nil {
+	if err := db.AutoMigrate(
+	&entity.Account{},
+    &entity.Review{},
+    &entity.FavoriteGame{},
+	&entity.PlayedGame{},
+	&entity.Rated{},
+	); err != nil {
 		return nil, nil, fmt.Errorf("failed to migrate database: %v", err)
 	}
 

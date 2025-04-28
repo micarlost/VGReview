@@ -53,6 +53,7 @@ func SetupRoutes(app *fiber.App) {
 		AllowOrigins: "http://localhost:3000",
 		AllowCredentials: true,
 		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
 	}))
 
 	// Simple hello world test
@@ -86,8 +87,31 @@ func SetupRoutes(app *fiber.App) {
 	app.Put("/user/:user_id/profile-description", handler.UpdateProfileDescription)
 	app.Static("/uploads", "./uploads")
 
+
 	//Routes for IGDB
 	app.Get("/api/games/search", handler.SearchGamesWithLimitOffset)
+	app.Get("/api/games/:id", handler.GetGameData)
+
+	//Routes for favorites
+	app.Post("/user/:user_id/favorite/:game_id", handler.AddFavoriteGame)
+	app.Delete("/user/:user_id/favorite/:game_id", handler.DeleteFavoriteGame)
+	app.Get("/user/:user_id/favorite/", handler.ListFavoriteGames)
+
+	//Routes for played
+	app.Post("/user/:user_id/played/:game_id", handler.AddPlayedGame)
+	app.Delete("/user/:user_id/played/:game_id", handler.DeletePlayedGame)
+	app.Get("/user/:user_id/played/", handler.ListPlayedGames)
+
+	//Routes for rated
+	app.Post("/user/:user_id/rating/:game_id", handler.UpdateRating)
+	app.Get("/user/:user_id/rating/:game_id", handler.GetRating)
+	app.Delete("/user/:user_id/game/:game_id/rating", handler.DeleteRating)
+
+
+
+
+
+
 
 
 }

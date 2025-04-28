@@ -68,8 +68,7 @@ export default function App() {
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<SearchResults />} />
-        <Route path="/gameTest" element={<GameTest games={games} />} />
-        <Route path="/game/:id" element={<GameDetails />} />
+        <Route path="/games/:id" element={<GameDetails />} />
         <Route path="/updateaccount" element={<UpdateAccount />} />
       </Routes>
     </Router>
