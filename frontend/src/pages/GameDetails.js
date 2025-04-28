@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
-import { FaStar } from 'react-icons/fa'; // New import for stars
+import { FaStar } from 'react-icons/fa';
 import './GameDetails.css';
 
 export default function GameDetails() {
@@ -14,7 +14,8 @@ export default function GameDetails() {
   const [isPlayed, setIsPlayed] = useState(false);
   const [playedLoading, setPlayedLoading] = useState(false);
   const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0); // New hover state
+  const [hoverRating, setHoverRating] = useState(0);
+  const [ratingFetched, setRatingFetched] = useState(false); // <-- Added this
 
   useEffect(() => {
     fetchGame();
@@ -71,6 +72,8 @@ export default function GameDetails() {
       setRating(data.rating);
     } catch (error) {
       console.error('Error fetching rating:', error);
+    } finally {
+      setRatingFetched(true); // <-- make sure we know rating was fetched
     }
   }
 
@@ -134,22 +137,40 @@ export default function GameDetails() {
       Notiflix.Notify.failure("You must be logged in to rate a game!");
       return;
     }
-
+  
+    const url = `http://localhost:4000/user/${userId}/rating/${id}`;
+  
     try {
-      const response = await fetch(`http://localhost:4000/user/${userId}/game/${id}/rating`, {
+      let response = await fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating: selectedRating }),
       });
-
+  
       if (response.ok) {
         setRating(selectedRating);
         Notiflix.Notify.success('Rating updated!');
+        return;
+      }
+  
+      if (response.status === 404 || response.status === 400) {
+        response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rating: selectedRating }),
+        });
+  
+        if (response.ok) {
+          setRating(selectedRating);
+          Notiflix.Notify.success('Rating added!');
+        } else {
+          Notiflix.Notify.failure('Failed to add rating');
+        }
       } else {
         Notiflix.Notify.failure('Failed to update rating');
       }
     } catch (error) {
-      Notiflix.Notify.failure('Error updating rating');
+      Notiflix.Notify.failure('Error saving rating');
       console.error('Error:', error);
     }
   }
@@ -192,8 +213,8 @@ export default function GameDetails() {
             onClick={handlePlayedToggle}
             className={`played-btn ${isPlayed ? 'played' : ''}`}
             disabled={playedLoading}
-            style={{ 
-              marginLeft: '10px', 
+            style={{
+              marginLeft: '10px',
               backgroundColor: isPlayed ? 'gold' : 'lightgray',
               color: 'black',
               fontWeight: 'bold',
@@ -208,30 +229,31 @@ export default function GameDetails() {
           </button>
 
           {/* Rating Section */}
-          {/* Rating Section */}
           <div style={{ marginTop: '20px' }}>
-          <h3>Rate this game:</h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-              {[1, 2, 3, 4, 5].map((star) => (
+            <h3>Rate this game:</h3>
+            {ratingFetched ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+                {[1, 2, 3, 4, 5].map((star) => (
                   <FaStar
-                  key={star}
-                  size={30}
-                  color={(hoverRating || rating) >= star ? 'gold' : 'lightgray'}
-                  onMouseEnter={() => setHoverRating(star)}
-                  onMouseLeave={() => setHoverRating(0)}
-                  onClick={() => handleStarClick(star)}
-                  style={{ transition: 'color 0.2s' }}
-                />
-              ))}
-          {rating > 0 && (
-            <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
-                {`You rated this ${rating} out of 5`}
-            </span>
-                  )}
+                    key={star}
+                    size={30}
+                    color={(hoverRating ? hoverRating >= star : rating >= star) ? 'gold' : 'lightgray'}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    onClick={() => handleStarClick(star)}
+                    style={{ transition: 'color 0.2s' }}
+                  />
+                ))}
+                {rating > 0 && (
+                  <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
+                    {`You rated this ${rating} out of 5`}
+                  </span>
+                )}
               </div>
-            </div>
-
-
+            ) : (
+              <p>Loading your rating...</p>
+            )}
+          </div>
         </div>
       </div>
 

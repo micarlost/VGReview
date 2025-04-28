@@ -5,7 +5,8 @@ import { useNavigate, Link } from 'react-router-dom';
 export function Account() {
     const [userInfo, setUserInfo] = useState(null);
     const [favoriteGames, setFavoriteGames] = useState([]);
-    const [playedGames, setPlayedGames] = useState([]); // 🆕
+    const [playedGames, setPlayedGames] = useState([]);
+    const [ratedGames, setRatedGames] = useState([]); // 🆕 Added Rated Games
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
@@ -31,42 +32,54 @@ export function Account() {
                 // Fetch favorite games
                 fetch(`http://localhost:4000/user/${userId}/favorite`)
                     .then((response) => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch favorite games');
-                        }
+                        if (!response.ok) throw new Error('Failed to fetch favorite games');
                         return response.json();
                     })
                     .then((favoriteData) => {
-                        const gameIDs = favoriteData.favorite_game_ids;
-
+                        const gameIDs = favoriteData.favorite_game_ids || [];
                         Promise.all(
                             gameIDs.map(id =>
-                                fetch(`http://localhost:4000/api/games/${id}`)
-                                    .then(res => res.json())
+                                fetch(`http://localhost:4000/api/games/${id}`).then(res => res.json())
                             )
                         ).then(games => setFavoriteGames(games))
                          .catch(err => console.error("Error fetching favorite games:", err));
                     })
                     .catch((error) => setError(error.message));
 
-                // Fetch played games 🆕
+                // Fetch played games
                 fetch(`http://localhost:4000/user/${userId}/played`)
                     .then((response) => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch played games');
-                        }
+                        if (!response.ok) throw new Error('Failed to fetch played games');
                         return response.json();
                     })
                     .then((playedData) => {
-                        const playedIDs = playedData.played_game_ids;
-
+                        const playedIDs = playedData.played_game_ids || [];
                         Promise.all(
                             playedIDs.map(id =>
-                                fetch(`http://localhost:4000/api/games/${id}`)
-                                    .then(res => res.json())
+                                fetch(`http://localhost:4000/api/games/${id}`).then(res => res.json())
                             )
                         ).then(games => setPlayedGames(games))
                          .catch(err => console.error("Error fetching played games:", err));
+                    })
+                    .catch((error) => setError(error.message));
+
+                // Fetch rated games 🆕
+                fetch(`http://localhost:4000/user/${userId}/ratings`)
+                    .then((response) => {
+                        if (!response.ok) throw new Error('Failed to fetch rated games');
+                        return response.json();
+                    })
+                    .then((ratingData) => {
+                        const ratings = ratingData.ratings || [];
+
+                        Promise.all(
+                            ratings.map(ratingEntry =>
+                                fetch(`http://localhost:4000/api/games/${ratingEntry.game_id}`)
+                                    .then(res => res.json())
+                                    .then(game => ({ ...game, userRating: ratingEntry.rating })) // attach rating
+                            )
+                        ).then(games => setRatedGames(games))
+                         .catch(err => console.error("Error fetching rated games:", err));
                     })
                     .catch((error) => setError(error.message));
 
@@ -138,7 +151,7 @@ export function Account() {
                 )}
             </div>
 
-            {/* Played Games Section 🆕 */}
+            {/* Played Games Section */}
             <div className="w-full max-w-4xl mt-10">
                 <h2 className="text-2xl font-bold text-black mb-4">Played Games</h2>
                 {playedGames.length > 0 ? (
@@ -161,6 +174,29 @@ export function Account() {
                 )}
             </div>
 
+            {/* Rated Games Section 🆕 */}
+            <div className="w-full max-w-4xl mt-10">
+                <h2 className="text-2xl font-bold text-black mb-4">Rated Games</h2>
+                {ratedGames.length > 0 ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {ratedGames.map((game) => (
+                            <Link to={`/games/${game.id}`} key={game.id}>
+                                <div className="bg-gray-100 p-4 rounded-lg shadow hover:shadow-lg transition flex flex-col items-center">
+                                    <img
+                                        src={game.cover?.url.replace('t_thumb', 't_cover_big') || '/default-game-cover.jpg'}
+                                        alt={game.name}
+                                        className="w-full h-40 object-cover rounded-md mb-2"
+                                    />
+                                    <h3 className="text-center font-semibold text-gray-800">{game.name}</h3>
+                                    <p className="text-yellow-500 font-bold mt-2">{`Your Rating: ${game.userRating} / 5`}</p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-600">No rated games yet!</p>
+                )}
+            </div>
         </div>
     );
 }

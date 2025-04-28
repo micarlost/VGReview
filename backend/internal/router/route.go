@@ -103,11 +103,11 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/user/:user_id/played/", handler.ListPlayedGames)
 
 	//Routes for rated
-	app.Post("/user/:user_id/rating/:game_id", handler.UpdateRating)
-	app.Get("/user/:user_id/rating/:game_id", handler.GetRating)
-	app.Delete("/user/:user_id/game/:game_id/rating", handler.DeleteRating)
-
-
+	app.Post("/user/:user_id/rating/:game_id", handler.AddRating)
+	app.Put("/user/:user_id/rating/:game_id", handler.UpdateRating) // Update rating
+	app.Get("/user/:user_id/rating/:game_id", handler.GetRating) // Get rating
+	app.Delete("/user/:user_id/game/:game_id/rating", handler.DeleteRating) // Delete rating
+	app.Get("/user/:user_id/ratings", handler.ListRatedGames) //List Rated Games
 
 
 
