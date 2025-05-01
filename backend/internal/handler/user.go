@@ -34,6 +34,7 @@ func User(c *fiber.Ctx) error {
 			"favorite_games": user.FavoriteGames,
 			"played_games": user.PlayedGames,
 			"rated_games": user.RatedGames,
+			"following": user.Following,
 		},
 	})
 }

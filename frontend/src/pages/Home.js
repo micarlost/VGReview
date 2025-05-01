@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Home.css';
+import noPhoto from "../images/no_image.jpg"; // Optional, in case a game has no image.
+
 const GameRow = ({ title, fetchUrl }) => {
   const [games, setGames] = useState([]);
 
@@ -15,23 +18,37 @@ const GameRow = ({ title, fetchUrl }) => {
     };
 
     fetchGames();
-  }, [fetchUrl]);
+  }, [fetchUrl, title]);
 
   return (
-    <div style={{ marginBottom: '2rem' }}>
-      <h2>{title}</h2>
-      <div style={{ display: 'flex', overflowX: 'auto', gap: '1rem' }}>
+    <div style={{ marginBottom: '4rem' }}>
+      <h2 style={{ textAlign: 'center', color: '#333' }}>{title}</h2>
+      <div className="game-grid">
         {games.map((game) => (
-          <div key={game.id} style={{ minWidth: '200px' }}>
-            {game.cover?.url && (
+          <Link key={game.id} to={`/games/${game.id}`} className="game-card-link">
+            <div className="game-card">
+              <h2>{game.name}</h2>
               <img
-                src={`https:${game.cover.url}`}
+                src={game.cover?.url
+                  ? game.cover.url.replace("t_thumb", "t_cover_big")
+                  : noPhoto}
                 alt={game.name}
-                style={{ width: '100%', borderRadius: '8px' }}
               />
-            )}
-            <p>{game.name}</p>
-          </div>
+              <p>
+                {game.summary
+                  ? game.summary.length > 150
+                    ? game.summary.slice(0, 150) + '...'
+                    : game.summary
+                  : "No description available."}
+              </p>
+              {/* Display Release Date */}
+              {game.first_release_date && (
+                <p className="release-date">
+                  Release Date: {new Date(game.first_release_date * 1000).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          </Link>
         ))}
       </div>
     </div>
@@ -41,9 +58,17 @@ const GameRow = ({ title, fetchUrl }) => {
 const HomePage = () => {
   return (
     <div>
-      <GameRow title="New Games" fetchUrl="/api/games/new" />
-      <GameRow title="Fighting Games" fetchUrl="/api/games/fighting" />
-      <GameRow title="Popular Games" fetchUrl="/api/games/popular" />
+      {/* Company description */}
+      <div className="home-header">
+        <h1>Welcome to GameHub!</h1>
+        <p>Discover, review, and stay up to date with the latest games. Whether you're into action, strategy, or puzzle games, GameHub has it all!</p>
+      </div>
+
+      {/* Upcoming Games Section */}
+      <GameRow title="Upcoming Games" fetchUrl="http://localhost:4000/api/games/upcoming" />
+
+      {/* New Releases Section */}
+      <GameRow title="New Releases" fetchUrl="http://localhost:4000/api/games/new" />
     </div>
   );
 };

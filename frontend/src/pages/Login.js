@@ -43,7 +43,7 @@ export function Login() {
                 Cookies.set('token', data.token, { expires: 1, sameSite: 'none', secure: true });
                 Cookies.set('userId', data.user.ID, { expires: 1, sameSite: 'none', secure: true });
                 setTimeout(() => {
-                    navigate('/games', { replace: true });
+                    navigate(`/profile/${data.user.ID}`, { replace: true });
                     window.location.reload();
                 }, 1000);
             } else {

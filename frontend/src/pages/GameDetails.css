@@ -123,3 +123,81 @@
     color: gold;
   }
   
+  .review-submission {
+    background: #1f1f1f;
+    padding: 20px;
+    margin: 40px auto;
+    max-width: 600px;
+    border-radius: 10px;
+    color: white;
+  }
+  
+  .review-submission textarea {
+    width: 100%;
+    min-height: 100px;
+    margin: 10px 0;
+    padding: 10px;
+    resize: vertical;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: #2a2a2a;
+    color: white;
+  }
+  
+  .star-rating-input {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .submit-review-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  .submit-review-btn:hover {
+    background-color: #218838;
+  }
+  
+  .review-section {
+    max-width: 800px;
+    margin: 40px auto;
+    color: white;
+  }
+  
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .review-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    background: #2c2c2c;
+    padding: 15px;
+    border-radius: 10px;
+  }
+  
+  .review-card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .review-card p {
+    margin: 5px 0 0;
+  }
+  
+  .star-rating {
+    display: flex;
+    gap: 2px;
+    margin: 4px 0;
+  }
+  

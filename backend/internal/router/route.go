@@ -89,6 +89,8 @@ func SetupRoutes(app *fiber.App) {
 
 
 	//Routes for IGDB
+	app.Get("/api/games/upcoming", handler.GetUpcomingGamesHandler)
+	app.Get("/api/games/new", handler.GetNewReleasesHandler)
 	app.Get("/api/games/search", handler.SearchGamesWithLimitOffset)
 	app.Get("/api/games/:id", handler.GetGameData)
 
@@ -108,6 +110,25 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/user/:user_id/rating/:game_id", handler.GetRating) // Get rating
 	app.Delete("/user/:user_id/game/:game_id/rating", handler.DeleteRating) // Delete rating
 	app.Get("/user/:user_id/ratings", handler.ListRatedGames) //List Rated Games
+
+	//Routes for reviews
+	app.Post("/reviews", handler.CreateReview)
+	app.Get("/reviews/:id", handler.GetReviewWithUser)
+	app.Put("/reviews/:id", handler.UpdateReview)
+	app.Delete("/reviews/:id", handler.DeleteReview)
+	app.Get("/games/:game_id/reviews", handler.GetReviewsByGameID)
+	app.Get("/accounts/:account_id/reviews", handler.GetReviewsByAccountID)
+
+
+	//Routes for following
+	app.Get("/user/:follower_id/follows/:followed_id", handler.IsFollowing)
+	app.Post("/users/:follower_id/follow/:followed_id", handler.FollowUser)
+	app.Delete("/users/:follower_id/unfollow/:followed_id", handler.UnfollowUser)
+	app.Get("/user/:user_id/following", handler.GetFollowingList)
+
+
+
+
 
 
 

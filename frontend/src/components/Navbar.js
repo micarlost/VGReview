@@ -1,22 +1,26 @@
-import React,{useState, useEffect, useCallback} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom"; 
 import "./Navbar.css";
 import { Button } from "./Button";
 import SearchBar from "./SearchBar";
 import { useLocation } from "react-router-dom";
-import {FaBars,FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import controllerLogo from "../images/controller.png";
 import Cookies from 'js-cookie';
+
 function Navbar() {
     const [mobileMenuActive, setMobileMenuActive] = useState(false);
-    const [isLoggedIn, setIsLoggedIn]             = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userId, setUserId] = useState(null); // To store the logged-in user's ID
 
     const handleMobileMenuClick = () => setMobileMenuActive(!mobileMenuActive);
     const closeMobileMenu = () => setMobileMenuActive(false);
 
     const checkLoggedInStatus = useCallback(() => {
         const token = Cookies.get('token');
+        const userId = Cookies.get('userId');  // Retrieve userId from cookies
         setIsLoggedIn(!!token);
+        setUserId(userId);  // Set the userId
     }, []);
 
     useEffect(() => {
@@ -26,22 +30,23 @@ function Navbar() {
     const location = useLocation();
     const navigate = useNavigate();
     const hideSearchBar = location.pathname === "/login" || location.pathname === "/signup";
+    
     const handleSearch = (query) => {
         if (query) {
           // Navigate to the search results page with the query
           navigate(`/search?query=${query}`);
         }
-      };
+    };
 
     return (
         <nav className="navbar">
             <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
-                <img src= {controllerLogo} alt="Logo" /> {/* Replace with your logo path */}
+                <img src={controllerLogo} alt="Logo" /> {/* Replace with your logo path */}
                 &nbsp;VG Reviews
             </Link>
 
             <div className="navbar-container">
-            {!hideSearchBar && (
+                {!hideSearchBar && (
                     <div className="search-bar-wrapper">
                         <SearchBar onSearch={handleSearch} />
                     </div>
@@ -50,20 +55,18 @@ function Navbar() {
                     {mobileMenuActive ? <FaTimes style={{color: "white"}}/> : <FaBars style={{color: "white"}} />}
                 </div>
                 <ul className={mobileMenuActive ? "nav-menu active" : "nav-menu"}>
-
-                     <li className="nav-item">
+                    <li className="nav-item">
                         <Link to="/gameTest" className="nav-btns" onClick={closeMobileMenu}>
-                                <Button buttonStyle='btn--outline' buttonSize='btn--large'>Games</Button>
+                            <Button buttonStyle='btn--outline' buttonSize='btn--large'>Games</Button>
                         </Link>
-                     </li>
-                     
+                    </li>
 
                     {/* Conditional rendering for account vs login/signup */}
                     {isLoggedIn ? (
                         <>
                             <li className="nav-item">
-                                <Link to="/account" className="nav-btns" onClick={closeMobileMenu}>
-                                    <Button buttonStyle='btn--outline' buttonSize='btn--large'>Account</Button>
+                                <Link to={`/profile/${userId}`} className="nav-btns" onClick={closeMobileMenu}>
+                                    <Button buttonStyle='btn--outline' buttonSize='btn--large'>Profile</Button>
                                 </Link>
                             </li>
                         </>
@@ -83,9 +86,8 @@ function Navbar() {
                     )}
                 </ul>
             </div>
-
         </nav>
-    )
+    );
 }
 
-export default Navbar
+export default Navbar;

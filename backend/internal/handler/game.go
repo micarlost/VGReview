@@ -6,7 +6,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"        
-	"strings"     
+	"strings"    
+	"time" 
 	"github.com/Henry-Sarabia/apicalypse"
 	"github.com/gofiber/fiber/v2"
 )
@@ -229,3 +230,138 @@ func GetGameData(c *fiber.Ctx) error {
 	return c.JSON(games[0])
 }
 
+func GetNewReleasesHandler(c *fiber.Ctx) error {
+	// Capture query parameters
+	limit := c.QueryInt("limit", 10)   // default 10 if not provided
+	offset := c.QueryInt("offset", 0)   // default 0 if not provided
+	now := strconv.FormatInt(time.Now().Unix(), 10)
+
+	// Manually build the body as a string
+	requestBody := `
+		fields id, name, genres.name, summary, cover.url, version_parent, first_release_date;
+		where first_release_date < ` + now + ` & version_parent = null;
+		sort first_release_date desc;
+		limit ` + strconv.Itoa(limit) + `;
+		offset ` + strconv.Itoa(offset) + `;
+	`
+
+	// Build a POST request manually
+	req, err := http.NewRequest(http.MethodPost, igdbEndpoint, strings.NewReader(requestBody))
+	if err != nil {
+		log.Println("Error creating request:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create IGDB request"})
+	}
+
+	// Add required headers
+	req.Header.Add("Client-ID", clientID)
+	req.Header.Add("Authorization", "Bearer "+accessToken)
+	req.Header.Add("Accept", "application/json")
+
+	// Send the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error sending request:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to send IGDB request"})
+	}
+	defer resp.Body.Close()
+
+	// Read response
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Error reading IGDB response:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to read IGDB response"})
+	}
+
+	// Debugging: Print response
+	log.Println("IGDB Response:", string(body))
+
+	// Decode JSON
+	var games []map[string]interface{}
+	if err := json.Unmarshal(body, &games); err != nil {
+		log.Println("Error decoding IGDB JSON:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to decode IGDB response"})
+	}
+
+	// Fix cover URLs
+	for i, game := range games {
+		if cover, exists := game["cover"].(map[string]interface{}); exists {
+			if url, ok := cover["url"].(string); ok {
+				if len(url) > 0 && url[0] == '/' {
+					cover["url"] = "https:" + url
+				}
+			}
+		}
+		games[i] = game
+	}
+
+	return c.JSON(games)
+}
+
+func GetUpcomingGamesHandler(c *fiber.Ctx) error {
+	// Capture query parameters
+	limit := c.QueryInt("limit", 10)   // default 10 if not provided
+	offset := c.QueryInt("offset", 0)   // default 0 if not provided
+	now := strconv.FormatInt(time.Now().Unix(), 10)
+
+	// Manually build the body as a string
+	requestBody := `
+	fields id, name, genres.name, summary, cover.url, version_parent, first_release_date;
+	where first_release_date > ` + now + ` & version_parent = null;
+	sort first_release_date asc;
+	limit ` + strconv.Itoa(limit) + `;
+	offset ` + strconv.Itoa(offset) + `;
+`
+
+	// Build a POST request manually
+	req, err := http.NewRequest(http.MethodPost, igdbEndpoint, strings.NewReader(requestBody))
+	if err != nil {
+		log.Println("Error creating request:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create IGDB request"})
+	}
+
+	// Add required headers
+	req.Header.Add("Client-ID", clientID)
+	req.Header.Add("Authorization", "Bearer "+accessToken)
+	req.Header.Add("Accept", "application/json")
+
+	// Send the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error sending request:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to send IGDB request"})
+	}
+	defer resp.Body.Close()
+
+	// Read response
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Error reading IGDB response:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to read IGDB response"})
+	}
+
+	// Debugging: Print response
+	log.Println("IGDB Response:", string(body))
+
+	// Decode JSON
+	var games []map[string]interface{}
+	if err := json.Unmarshal(body, &games); err != nil {
+		log.Println("Error decoding IGDB JSON:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to decode IGDB response"})
+	}
+
+	// Fix cover URLs
+	for i, game := range games {
+		if cover, exists := game["cover"].(map[string]interface{}); exists {
+			if url, ok := cover["url"].(string); ok {
+				if len(url) > 0 && url[0] == '/' {
+					cover["url"] = "https:" + url
+				}
+			}
+		}
+		games[i] = game
+	}
+
+	return c.JSON(games)
+}

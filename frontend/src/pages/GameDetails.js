@@ -15,13 +15,20 @@ export default function GameDetails() {
   const [playedLoading, setPlayedLoading] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [ratingFetched, setRatingFetched] = useState(false); // <-- Added this
+  const [ratingFetched, setRatingFetched] = useState(false); 
+  const [reviews, setReviews] = useState([]);
+  const [newReviewContent, setNewReviewContent] = useState('');
+  const [newReviewRating, setNewReviewRating] = useState(5);
+  const [hoverReviewRating, setHoverReviewRating] = useState(0);
+  const [reviewRating, setReviewRating] = useState(0);
+
 
   useEffect(() => {
     fetchGame();
     checkFavoriteStatus();
     checkPlayedStatus();
     fetchRating();
+    fetchReviews();
   }, [id]);
 
   async function fetchGame() {
@@ -131,35 +138,62 @@ export default function GameDetails() {
     }
   }
 
+  async function fetchReviews() {
+    try {
+      const response = await fetch(`http://localhost:4000/reviews?game_id=${id}`);
+      const data = await response.json();
+      const reviews = data.reviews || [];
+  
+      // Fetch user data in parallel and cache by account_id
+      const userCache = {};
+      const reviewsWithUsers = await Promise.all(
+        reviews.map(async (review) => {
+          const { account_id } = review;
+          if (!userCache[account_id]) {
+            const userRes = await fetch(`http://localhost:4000/user/${account_id}`);
+            const userData = await userRes.json();
+            userCache[account_id] = userData;
+          }
+          return { ...review, user: userCache[account_id] };
+        })
+      );
+  
+      setReviews(reviewsWithUsers);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    }
+  }
+  
+
   async function handleStarClick(selectedRating) {
     const userId = Cookies.get('userId');
     if (!userId) {
       Notiflix.Notify.failure("You must be logged in to rate a game!");
       return;
     }
-  
+
     const url = `http://localhost:4000/user/${userId}/rating/${id}`;
-  
+
     try {
       let response = await fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating: selectedRating }),
       });
-  
+
       if (response.ok) {
         setRating(selectedRating);
         Notiflix.Notify.success('Rating updated!');
         return;
       }
-  
+
       if (response.status === 404 || response.status === 400) {
         response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ rating: selectedRating }),
         });
-  
+
         if (response.ok) {
           setRating(selectedRating);
           Notiflix.Notify.success('Rating added!');
@@ -174,6 +208,44 @@ export default function GameDetails() {
       console.error('Error:', error);
     }
   }
+
+
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+  
+    if (!newReviewContent.trim() || reviewRating  < 1 || reviewRating  > 5) {
+      Notiflix.Notify.failure('Please provide valid content and rating (1-5).');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://localhost:4000/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: newReviewContent,
+          rating: newReviewRating,
+          game_id: Number(id),
+          account_id: Number(Cookies.get('userId')),
+        }),
+      });
+  
+      if (response.ok) {
+        Notiflix.Notify.success('Review submitted!');
+        setNewReviewContent(''); // Clear the review content
+        setNewReviewRating(5);    // Reset the rating to 5 (or any default value)
+        fetchReviews();           // Refresh the reviews
+      } else {
+        const errorData = await response.json();
+        Notiflix.Notify.failure(errorData.error || 'Failed to submit review.');
+      }
+    } catch (err) {
+      console.error('Error submitting review:', err);
+      Notiflix.Notify.failure('Error submitting review');
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (!game) return <p>Game not found.</p>;
@@ -228,32 +300,39 @@ export default function GameDetails() {
             {playedLoading ? 'Loading...' : isPlayed ? '✔ Played' : '▶ Mark as Played'}
           </button>
 
-          {/* Rating Section */}
           <div style={{ marginTop: '20px' }}>
-            <h3>Rate this game:</h3>
-            {ratingFetched ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <FaStar
-                    key={star}
-                    size={30}
-                    color={(hoverRating ? hoverRating >= star : rating >= star) ? 'gold' : 'lightgray'}
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    onClick={() => handleStarClick(star)}
-                    style={{ transition: 'color 0.2s' }}
-                  />
-                ))}
-                {rating > 0 && (
-                  <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
-                    {`You rated this ${rating} out of 5`}
-                  </span>
-                )}
-              </div>
-            ) : (
-              <p>Loading your rating...</p>
-            )}
-          </div>
+  <h3>Rate this game:</h3>
+  {ratingFetched ? (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+      {[1, 2, 3, 4, 5].map((star) => {
+        const isFilled = hoverRating ? hoverRating >= star : rating >= star;
+        const color = hoverRating
+          ? hoverRating >= star ? 'red' : 'lightgray'
+          : rating >= star ? 'gold' : 'lightgray';
+
+        return (
+          <FaStar
+            key={star}
+            size={30}
+            color={color}
+            onMouseEnter={() => setHoverRating(star)}
+            onMouseLeave={() => setHoverRating(0)}
+            onClick={() => handleStarClick(star)}
+            style={{ transition: 'color 0.2s' }}
+          />
+        );
+      })}
+      {rating > 0 && (
+        <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
+          {`You rated this ${rating} out of 5`}
+        </span>
+      )}
+    </div>
+  ) : (
+    <p>Loading your rating...</p>
+  )}
+</div>
+
         </div>
       </div>
 
@@ -287,6 +366,104 @@ export default function GameDetails() {
           </div>
         </div>
       )}
+
+<div className="reviews-section" style={{ marginTop: '40px' }}>
+  <h2>Recent Reviews</h2>
+  {reviews.length > 0 ? (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {reviews.map((review) => (
+        <div
+          key={review.id}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '15px',
+            border: '1px solid #ddd',
+            borderRadius: '10px',
+            backgroundColor: '#f9f9f9',
+          }}
+        >
+          <p><strong>Account ID:</strong> {review.account_id}</p>
+          <p><strong>Description:</strong> {review.content}</p>
+          <p><strong>Rating:</strong> {review.rating}</p>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p style={{ fontStyle: 'italic', color: '#888', marginTop: '10px' }}>
+      No current reviews, be the first to post!
+    </p>
+  )}
+</div>
+
+
+      {/* Review Section */}
+      <div className="reviews-section" style={{ marginTop: '40px' }}>
+        <h2>Write a Review</h2>
+        {Cookies.get('userId') ? (
+          <form onSubmit={handleSubmitReview} style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '600px' }}>
+          <textarea
+            placeholder="Write your review..."
+            value={newReviewContent}
+            onChange={(e) => setNewReviewContent(e.target.value)}
+            rows={4}
+            style={{
+              padding: '10px',
+              borderRadius: '5px',
+              resize: 'vertical',
+              backgroundColor: '#f0f0f0', // grey background
+              color: 'black', // black text
+            }}
+            required
+          />
+          <label>
+  Rating:
+  <div style={{ display: 'flex', gap: '5px', marginLeft: '10px', cursor: 'pointer' }}>
+    {[1, 2, 3, 4, 5].map((star) => {
+      const color = hoverReviewRating
+        ? hoverReviewRating >= star ? 'red' : 'lightgray'
+        : reviewRating >= star ? 'gold' : 'lightgray';
+
+      return (
+        <FaStar
+          key={star}
+          size={30}
+          color={color}
+          onMouseEnter={() => setHoverReviewRating(star)}
+          onMouseLeave={() => setHoverReviewRating(0)}
+          onClick={() => setReviewRating(star)}
+          style={{ transition: 'color 0.2s' }}
+        />
+      );
+    })}
+    {reviewRating > 0 && (
+      <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>
+        {`${reviewRating} out of 5`}
+      </span>
+    )}
+  </div>
+</label>
+
+          <button
+            type="submit"
+            style={{
+              backgroundColor: '#D64B4B', // Darker red
+              color: '#fff',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            Submit Review
+          </button>
+        </form>
+        ) : (
+          <p style={{ fontStyle: 'italic', color: '#888' }}>
+            You must be logged in to post a review.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
