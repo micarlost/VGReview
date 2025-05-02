@@ -22,7 +22,7 @@ const GameRow = ({ title, fetchUrl }) => {
 
   return (
     <div style={{ marginBottom: '4rem' }}>
-      <h2 style={{ textAlign: 'center', color: '#333' }}>{title}</h2>
+      <h2 className="text-4xl text-white text-center font-bold mb-6">{title}</h2>
       <div className="game-grid">
         {games.map((game) => (
           <Link key={game.id} to={`/games/${game.id}`} className="game-card-link">
@@ -57,11 +57,11 @@ const GameRow = ({ title, fetchUrl }) => {
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="bg-black text-white min-h-screen p-6">
       {/* Company description */}
-      <div className="home-header">
-        <h1>Welcome to GameHub!</h1>
-        <p>Discover, review, and stay up to date with the latest games. Whether you're into action, strategy, or puzzle games, GameHub has it all!</p>
+      <div className="home-header text-center mb-10">
+        <h1 className="text-5xl font-bold mb-4">Welcome to VG REVIEW!</h1>
+        <p className="text-2xl">Discover, review, and stay up to date with the latest games!</p>
       </div>
 
       {/* Upcoming Games Section */}

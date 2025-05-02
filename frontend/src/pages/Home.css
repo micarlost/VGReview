@@ -1,92 +1,54 @@
-/* Game Grid Layout */
-.game-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
-}
-
-/* Game Card */
-.game-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200px;  /* Reduced width */
-  height: 350px; /* Reduced height */
-  margin: 20px;
-  padding: 10px;
-  border-radius: 12px;
-  background-color: #000; /* black background */
-  border: 1px solid #fff; /* skinny white border */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-/* Hover Effect for Game Card */
-.game-card:hover {
-  transform: translateY(-8px) scale(1.03); /* slight lift and scale */
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.8); /* stronger glow */
-}
-
-/* Game Card Image */
-.game-card img {
-  width: 100%;
-  height: 180px;  /* Adjust image size */
-  object-fit: cover;
-  background-color: #00000000; /* Keeps black behind transparent images */
-  border-radius: 8px;
-}
-
-/* Game Title */
-.game-card h2 {
-  font-size: 1rem;
-  color: #ffffff;
-  margin-top: 15px;
-  text-align: center;
-}
-
-/* Game Description */
-.game-card p {
-  font-size: 0.9rem;
-  color: #ffffff;
-  margin-top: 10px;
-  height: 90px; /* controls box height */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 4; /* number of lines before cutting off */
-  -webkit-box-orient: vertical;
-}
-
-/* Release Date */
-.release-date {
-  font-size: 0.8rem;
-  color: #bbb;
-  margin-top: 10px;
-}
-
-/* Game Card Link */
-.game-card-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* Home Header Styling */
-.home-header {
-  padding: 2rem;
-  background-color: #f4f4f4;
-  text-align: center;
+body {
+  background-color: #000; /* Ensures full black background */
+  color: #fff; /* White text */
+  font-family: 'Poppins', sans-serif;
 }
 
 .home-header h1 {
-  margin-bottom: 10px;
-  color: #333;
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  margin-bottom: 0.5rem;
 }
 
 .home-header p {
+  font-size: 1.25rem;
+  color: #ccc;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.game-card {
+  background-color: #111;
+  padding: 1rem;
+  border-radius: 10px;
+  transition: transform 0.2s ease-in-out;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.game-card:hover {
+  transform: scale(1.05);
+}
+
+.game-card h2 {
+  font-family: 'Orbitron', sans-serif;
   font-size: 1.2rem;
-  color: #555;
+  margin-bottom: 0.5rem;
+  color: #0ff; /* Neon cyan for cool effect */
+}
+
+.game-card p {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.release-date {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.5rem;
 }

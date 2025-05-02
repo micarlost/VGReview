@@ -158,7 +158,7 @@ export function UpdateAccount() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="p-2 border border-red-500 rounded w-full max-w-xs mt-4"
+                className="w-64 px-2 py-1 border border-white rounded-md bg-black text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="Username"
             />
 
@@ -166,7 +166,7 @@ export function UpdateAccount() {
             <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="p-2 border border-red-500 rounded w-full max-w-xs mt-4"
+                className="w-64 px-2 py-1 border border-white rounded-md bg-black text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="Write something about yourself"
             />
 

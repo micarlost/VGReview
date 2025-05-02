@@ -27,7 +27,7 @@ export default function SearchBar({ onSearch }) {
           onKeyDown={handleKeyDown} // 👈 listen for key press
           type="search"
           id="default-search"
-          className="input w-full max-w-md pl-8 h-12 rounded-lg border"
+          className="input w-full max-w-md pl-8 h-12 rounded-lg border text-black"
           placeholder="Search for a videogame"
         />
       </div>

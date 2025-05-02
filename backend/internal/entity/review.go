@@ -10,4 +10,6 @@ type Review struct {
 	Rating    int    `gorm:"not null" json:"rating"`
 	GameID    uint   `gorm:"not null" json:"game_id"`
 	AccountID uint   `gorm:"not null" json:"account_id"`
+    Account Account `gorm:"foreignKey:AccountID"`
+
 }

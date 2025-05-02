@@ -113,11 +113,12 @@ func SetupRoutes(app *fiber.App) {
 
 	//Routes for reviews
 	app.Post("/reviews", handler.CreateReview)
-	app.Get("/reviews/:id", handler.GetReviewWithUser)
 	app.Put("/reviews/:id", handler.UpdateReview)
 	app.Delete("/reviews/:id", handler.DeleteReview)
 	app.Get("/games/:game_id/reviews", handler.GetReviewsByGameID)
 	app.Get("/accounts/:account_id/reviews", handler.GetReviewsByAccountID)
+	app.Get("/reviews/:id", handler.GetReviewWithUser)
+
 
 
 	//Routes for following

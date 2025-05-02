@@ -66,7 +66,7 @@ export function Login() {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full px-3 py-2 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="w-full px-3 py-2 border border-white rounded-md bg-black text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                             required
                         />
                     </div>
@@ -77,7 +77,7 @@ export function Login() {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full px-3 py-2 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="w-full px-3 py-2 border border-white rounded-md bg-black text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                             required
                         />
                         <button

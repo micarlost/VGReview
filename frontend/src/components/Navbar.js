@@ -55,11 +55,6 @@ function Navbar() {
                     {mobileMenuActive ? <FaTimes style={{color: "white"}}/> : <FaBars style={{color: "white"}} />}
                 </div>
                 <ul className={mobileMenuActive ? "nav-menu active" : "nav-menu"}>
-                    <li className="nav-item">
-                        <Link to="/gameTest" className="nav-btns" onClick={closeMobileMenu}>
-                            <Button buttonStyle='btn--outline' buttonSize='btn--large'>Games</Button>
-                        </Link>
-                    </li>
 
                     {/* Conditional rendering for account vs login/signup */}
                     {isLoggedIn ? (

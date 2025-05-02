@@ -209,6 +209,31 @@ export default function GameDetails() {
     }
   }
 
+  async function fetchReviews() {
+    try {
+      const response = await fetch(`http://localhost:4000/reviews?game_id=${id}`);
+      const data = await response.json();
+      const reviews = data.reviews || [];
+
+      // Fetch user data in parallel and cache by account_id
+      const userCache = {};
+      const reviewsWithUsers = await Promise.all(
+        reviews.map(async (review) => {
+          const { account_id } = review;
+          if (!userCache[account_id]) {
+            const userRes = await fetch(`http://localhost:4000/user/${account_id}`);
+            const userData = await userRes.json();
+            userCache[account_id] = userData;
+          }
+          return { ...review, user: userCache[account_id] };
+        })
+      );
+
+      setReviews(reviewsWithUsers);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    }
+  }
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -226,7 +251,7 @@ export default function GameDetails() {
         },
         body: JSON.stringify({
           content: newReviewContent,
-          rating: newReviewRating,
+          rating: reviewRating,
           game_id: Number(id),
           account_id: Number(Cookies.get('userId')),
         }),
@@ -235,7 +260,7 @@ export default function GameDetails() {
       if (response.ok) {
         Notiflix.Notify.success('Review submitted!');
         setNewReviewContent(''); // Clear the review content
-        setNewReviewRating(5);    // Reset the rating to 5 (or any default value)
+        setNewReviewRating(newReviewRating);    // Reset the rating to 5 (or any default value)
         fetchReviews();           // Refresh the reviews
       } else {
         const errorData = await response.json();
@@ -333,8 +358,11 @@ export default function GameDetails() {
   )}
 </div>
 
+
         </div>
       </div>
+
+      
 
       {/* Trailer */}
       {game.videos && game.videos.length > 0 && (

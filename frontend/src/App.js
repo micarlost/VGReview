@@ -16,6 +16,7 @@ import ProtectedRoute from "./config/ProtectedRoutes";
 import GameList from './components/GameList';
 import { UpdateAccount } from './pages/UpdateAccount';
 import Following from './pages/Following'; // Import Following page
+import Review from './pages/Review';
 
 export default function App() {
   const [games, setGames] = useState([]);
@@ -76,6 +77,7 @@ export default function App() {
         {/* Other routes */}
         <Route path="/search" element={<SearchResults />} />
         <Route path="/games/:id" element={<GameDetails />} />
+        <Route path="/reviews/:reviewId" element={<Review />} />
         <Route path="/updateaccount" element={<ProtectedRoute><UpdateAccount /></ProtectedRoute>} />
       </Routes>
     </Router>
